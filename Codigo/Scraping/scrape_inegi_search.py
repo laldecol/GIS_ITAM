@@ -24,13 +24,13 @@ def downloader(inegi_csv,folder):
         r=session.get(url)
         r.html.render()
         links=list(filter(rexp.match,r.html.absolute_links))
-        wget.download(links[0],folder)
-        logging.info("Downloaded %s", links[0])
-        #soup=bs4.BeautifulSoup(r,'html5lib')
-        #print(soup.prettify)
         
-    
-    
+        try:
+            logging.info("Downloading %s", links[0])          
+            wget.download(links[0],folder)
+        except Exception as e:
+            logging.info("Download of %s failed.", links)
+            
     logging.info("Done running downloader")
 
 if __name__ == "__main__":
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     runfile=pathlib.Path(__file__).absolute()
     rundir=runfile.parent
     
-    logging.basicConfig(filename=str(rundir)+"/"+str(runfile.stem)+".txt",filemode='w',format='%(levelname)s:%(message)s',level=logging.INFO)
+    logging.basicConfig(filename=str(rundir)+"/"+str(runfile.stem)+".log",filemode='w',format='%(levelname)s:%(message)s',level=logging.DEBUG)
     logging.info("Starting "+str(runfile))
     
     inegi_csv="D:\Personal Directory\Lorenzo\Datos_GIS_ITAM\Clases\Rasters\INEGI_CSV\Mapas_2020-6-8_15-21-27.csv"
@@ -46,4 +46,3 @@ if __name__ == "__main__":
     downloader(inegi_csv, folder)
     
     logging.info("Done with "+str(runfile))
-    
