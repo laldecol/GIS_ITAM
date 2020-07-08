@@ -15,7 +15,7 @@ def dbf_to_csv(path):
     
     #Name output csv file same as input dbf
     [dirname,filename]=os.path.split(path)
-    csv_file=dirname+os.path.splitext(filename)[0]+'.csv'
+    csv_file=dirname+"/"+os.path.splitext(filename)[0]+'.csv'
     
     #Read dbf object
     print('Reading '+path)
@@ -61,7 +61,8 @@ def clean_viaje_df(df):
                'ini_hor','ini_min',
                'fin_hor','fin_min',
                'FACTOR','SEXO','EDAD']]
-    
+    df_ret.replace(to_replace=888, value=np.nan, inplace=True)
+    df_ret.dropna(inplace=True)
     return df_ret
     
     
@@ -69,11 +70,20 @@ if __name__ == "__main__":
     
     runfile=pathlib.Path(__file__).absolute()
     rundir=runfile.parent
+    logging.basicConfig(filename=str(rundir)+"/"+str(runfile.stem)+".txt",filemode='w',format='%(asctime)s:%(message)s',level=logging.DEBUG)
+    logging.info("Starting "+str(runfile))
     
-    filedir='D:/Personal Directory/Lorenzo/Datos_GIS_ITAM/Clases/Encuestas/bd_eod_2017_dbf/'
-    dbf_viajes=filedir+'TVIAJE.dbf'
+    #Location of source dbfs
+    source_dir='D:/Personal Directory/Lorenzo/Datos_GIS_ITAM/Clases/Encuestas/EOD_ZMVM/source/bd_eod_2017_dbf/'
+    
+    #Location to write clean csv
+    gen_file='D:/Personal Directory/Lorenzo/Datos_GIS_ITAM/Clases/Encuestas/EOD_ZMVM/generated/viajes/viajes.csv'
+    dbf_viajes=source_dir+'TVIAJE.dbf'
+    
+    #Convert raw dbf to csv
     csv_viajes=dbf_to_csv(dbf_viajes)
     
+    #Columns to keep
     viajes_cols=['ID_VIA','ID_SOC','N_VIA',
                  'P5_3', 'P5_6', 'P5_7_6', 'P5_7_7', 'DTO_ORIGEN', 'P5_11A', 'P5_12_6', 'P5_12_7', 
                  'DTO_DEST', 'P5_9_1', 'P5_9_2', 'P5_10_1', 'P5_10_2', 'P5_14_01', 'P5_15_01',
@@ -86,15 +96,15 @@ if __name__ == "__main__":
                  'P5_14_20', 'P5_15_20',
                  'SEXO', 'FACTOR', 'EDAD']
     
+    #Read raw csv and clean it into a dataframe
     print('Reading '+csv_viajes+' to dataframe.')
     df_viajes=pandas.read_csv(csv_viajes,usecols=viajes_cols)
     df_viajes=clean_viaje_df(df_viajes)
+       
+    gen_dir=os.path.dirname(gen_file)
     
-    list(df_viajes)
+    if os.path.isdir(gen_dir)==False:
+        os.makedirs(gen_dir)
     
-    df_viajes.head()
-    
-    logging.basicConfig(filename=str(rundir)+"/"+str(runfile.stem)+".txt",filemode='w',format=':',level=logging.DEBUG)
-    logging.info("Starting "+str(runfile))
-    
+    df_viajes.to_csv(path_or_buf=gen_file)    
     logging.info("Done with "+str(runfile))
