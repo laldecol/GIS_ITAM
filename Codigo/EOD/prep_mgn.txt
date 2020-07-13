@@ -1,1 +1,2 @@
-2020-07-08 17:14:07,234:Starting E:\Codes-Lorenzo\GIS_ITAM\Codigo\EOD\prep_mgn.py
+2020-07-13 19:00:53,790:Starting E:\Codes-Lorenzo\GIS_ITAM\Codigo\EOD\prep_mgn.py
+2020-07-13 19:01:01,489:Done with E:\Codes-Lorenzo\GIS_ITAM\Codigo\EOD\prep_mgn.py

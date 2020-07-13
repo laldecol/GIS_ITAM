@@ -4,7 +4,7 @@
 #Created by Lorenzo Aldeco on 07/08/20 14:20:40:
 #Last modified by Lorenzo Aldeco on 07/08/20 14:20:40
 
-import logging, pathlib, pandas
+import logging, pathlib, pandas, pickle
 
 if __name__ == "__main__":
     
@@ -20,16 +20,20 @@ if __name__ == "__main__":
     
     #Create list of unique estado mun pairs
     ori_edo_str=viajes['ori_ent'].apply(str).str.zfill(2)
-    ori_mun_str=viajes['ori_del'].apply(str).str.zfill(2)
+    ori_mun_str=viajes['ori_del'].apply(str).str.zfill(3)
     
     ori_idedomun=ori_edo_str.str.cat(ori_mun_str)
     
     des_edo_str=viajes['des_ent'].apply(str).str.zfill(2)
-    des_mun_str=viajes['des_del'].apply(str).str.zfill(2)
+    des_mun_str=viajes['des_del'].apply(str).str.zfill(3)
     
     des_idedomun=des_edo_str.str.cat(des_mun_str)
     
     idedomun=ori_idedomun.append(des_idedomun).unique().tolist()
     
+    id_file='D:/Personal Directory/Lorenzo/Datos_GIS_ITAM/Clases/Encuestas/EOD_ZMVM/generated/mun_ids.list'
+    
+    with open(id_file, mode='wb') as file:
+        pickle.dump(idedomun, file)
         
     logging.info("Done with "+str(runfile))
