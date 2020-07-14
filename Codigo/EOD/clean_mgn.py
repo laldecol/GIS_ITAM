@@ -12,6 +12,9 @@ for field in fields:
     print(field.name(), field.typeName())
 
 print(len(list(layer.getFeatures())))
+select_ids=[]
 for f in layer.getFeatures():
-    print(f['CVEGEO'])
+    if f['CVEGEO'] in id_list:
+        select_ids.append(f.id())
     
+_writer = QgsVectorFileWriter.writeAsVectorFormat(layer,"D:\Personal Directory\Lorenzo\Datos_GIS_ITAM\Clases\Encuestas\EOD_ZMVM\generated\muns_ZMVM.shp","utf-8", driverName = "ESRI Shapefile",onlySelected=True)
